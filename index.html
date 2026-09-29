@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ease</title>
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#121820">
 <meta name="description" content="Breathing, stillness and heat. A small offline rest app.">
 <meta name="mobile-web-app-capable" content="yes">
@@ -114,6 +114,11 @@
       </label>
       <label class="check"><input type="checkbox" id="sWake"> Keep the screen on during sessions</label>
       <label class="check"><input type="checkbox" id="sVibe"> Gentle vibration on phase changes</label>
+    </div>
+    <div class="card" id="installCard">
+      <div class="label">Install</div>
+      <p class="muted" id="installMsg"></p>
+      <button id="installBtn" class="btn primary wide" hidden>Install Ease</button>
     </div>
     <div class="card">
       <div class="label">Your data</div>

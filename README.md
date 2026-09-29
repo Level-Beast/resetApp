@@ -9,7 +9,7 @@ Plain HTML/CSS/JS. No build step, no dependencies.
 3. Open `https://<you>.github.io/<repo>/` on your phone.
 
 ## Install as an app
-- Android (Chrome): menu > Install app (not "Add to Home screen" shortcut).
+- Android (Chrome): use the Install button in Settings, or menu > Install app. Remove any old shortcut first.
 - iPhone (Safari): Share > Add to Home Screen.
 Open it once online; after that it works with no internet.
 

@@ -410,4 +410,22 @@ $('#resetBtn').onclick = () => {
 
 /* ---------- init ---------- */
 renderPrograms(); renderStill(); renderHeat();
-if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+/* ---------- install / PWA ---------- */
+let installEvt = null;
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+function installStatus() {
+  const msg = $('#installMsg'), btn = $('#installBtn');
+  const sw = 'serviceWorker' in navigator ? (navigator.serviceWorker.controller ? 'ready' : 'starting, reload once') : 'not supported here';
+  if (isStandalone()) { msg.textContent = 'Running as an installed app. Offline: ' + sw + '.'; btn.hidden = true; return; }
+  if (installEvt) { msg.textContent = 'Ready to install as a full app.'; btn.hidden = false; return; }
+  btn.hidden = true;
+  msg.textContent = 'Not installed yet. Offline: ' + sw + '. If Chrome offers only "Add to Home screen", open the site over https, reload once, then check the menu for "Install app". Remove any old shortcut first.';
+}
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; installStatus(); });
+window.addEventListener('appinstalled', () => { installEvt = null; installStatus(); });
+$('#installBtn').onclick = async () => { if (!installEvt) return; installEvt.prompt(); await installEvt.userChoice; installEvt = null; installStatus(); };
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js', { scope: './' }).then(installStatus).catch(installStatus);
+  navigator.serviceWorker.addEventListener('controllerchange', installStatus);
+}
+installStatus();
