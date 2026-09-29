@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ease</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#121820">
+<meta name="description" content="Breathing, stillness and heat. A small offline rest app.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ease">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main>
+
+  <!-- BREATHE -->
+  <section id="v-breathe" class="view">
+    <h1>Breathe</h1>
+    <p class="sub">Pick a program, or make your own.</p>
+    <div id="programs"></div>
+    <button id="newProgram" class="btn ghost wide">New program</button>
+  </section>
+
+  <!-- STILL -->
+  <section id="v-still" class="view" hidden>
+    <h1>Stillness</h1>
+    <p class="sub">A blank screen for as long as you set. You won't see the time. A soft sound tells you it's over.</p>
+    <div class="card center">
+      <div class="big" id="boreVal">20 min</div>
+      <div class="steps" id="boreSteps">
+        <button data-d="-5">-5</button><button data-d="-1">-1</button>
+        <button data-d="1">+1</button><button data-d="5">+5</button>
+      </div>
+      <div class="chips" id="boreChips"></div>
+    </div>
+    <button id="boreStart" class="btn primary wide">Begin</button>
+  </section>
+
+  <!-- HEAT -->
+  <section id="v-heat" class="view" hidden>
+    <h1>Heat</h1>
+    <p class="sub">Warm your neck or temples once a day.</p>
+    <div class="card">
+      <div id="heatStatus" class="status"></div>
+      <div id="heatIdle">
+        <div class="label">Where</div>
+        <div class="chips" id="heatAreas"></div>
+        <div class="label">Timer length</div>
+        <div class="row between">
+          <div class="big small" id="heatVal">10 min</div>
+          <div class="steps" id="heatSteps">
+            <button data-d="-5">-5</button><button data-d="-1">-1</button>
+            <button data-d="1">+1</button><button data-d="5">+5</button>
+          </div>
+        </div>
+      </div>
+      <div id="heatRun" hidden class="center">
+        <div class="big" id="heatClock">10:00</div>
+        <button id="heatCancel" class="btn ghost">Cancel</button>
+      </div>
+    </div>
+    <div id="heatActions" class="stack">
+      <button id="heatStart" class="btn primary wide">Start timer</button>
+      <button id="heatMark" class="btn ghost wide">Mark as done without timer</button>
+      <button id="heatUndo" class="btn text wide" hidden>Undo last entry today</button>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section id="v-stats" class="view" hidden>
+    <h1>Consistency</h1>
+    <div class="chips" id="gridFilter">
+      <button data-f="all" class="on">All</button>
+      <button data-f="breath">Breathe</button>
+      <button data-f="bore">Stillness</button>
+      <button data-f="heat">Heat</button>
+    </div>
+    <div class="card">
+      <div id="grid" class="grid"></div>
+      <div id="gridDetail" class="detail">Tap a day to see what you did.</div>
+      <div class="legend"><span>Less</span><i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><span>More</span></div>
+    </div>
+    <div class="tiles" id="tiles"></div>
+    <div class="card">
+      <div class="label">Heat, last 7 days</div>
+      <div id="heatDots" class="dots"></div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="v-settings" class="view" hidden>
+    <h1>Settings</h1>
+    <div class="card form">
+      <label>Volume
+        <input type="range" id="sVol" min="0.05" max="1" step="0.05">
+      </label>
+      <label>Breathe in sound
+        <span class="pair"><select id="sIn"></select><button class="btn ghost sm" data-prev="sIn">Play</button></span>
+      </label>
+      <label>Breathe out sound
+        <span class="pair"><select id="sOut"></select><button class="btn ghost sm" data-prev="sOut">Play</button></span>
+      </label>
+      <label>Hold sound
+        <span class="pair"><select id="sHold"></select><button class="btn ghost sm" data-prev="sHold">Play</button></span>
+      </label>
+      <label>Stillness end sound
+        <span class="pair"><select id="sEnd"></select><button class="btn ghost sm" data-prev="sEnd">Play</button></span>
+      </label>
+      <label class="check"><input type="checkbox" id="sWake"> Keep the screen on during sessions</label>
+      <label class="check"><input type="checkbox" id="sVibe"> Gentle vibration on phase changes</label>
+    </div>
+    <div class="card">
+      <div class="label">Your data</div>
+      <p class="muted">Everything stays on this phone. Save a backup now and then.</p>
+      <div class="stack">
+        <button id="exportBtn" class="btn ghost wide">Save backup</button>
+        <button id="importBtn" class="btn ghost wide">Restore backup</button>
+        <button id="resetBtn" class="btn text wide danger">Erase all data</button>
+      </div>
+      <input type="file" id="importFile" accept="application/json" hidden>
+    </div>
+  </section>
+
+</main>
+
+<nav id="tabs">
+  <button data-v="breathe" class="on">Breathe</button>
+  <button data-v="still">Stillness</button>
+  <button data-v="heat">Heat</button>
+  <button data-v="stats">Stats</button>
+  <button data-v="settings">Settings</button>
+</nav>
+
+<!-- Breathing session -->
+<div id="session" class="overlay" hidden>
+  <div class="s-top">
+    <span id="sName"></span>
+    <span id="sRound"></span>
+  </div>
+  <div class="orb-wrap">
+    <div id="orb" class="orb"></div>
+    <div id="sCount" class="count"></div>
+  </div>
+  <div id="sLabel" class="phase"></div>
+  <div class="s-controls" id="sControls">
+    <button id="sPause" class="btn ghost">Pause</button>
+    <button id="sSkip" class="btn ghost">Skip</button>
+    <button id="sEnd" class="btn ghost">End</button>
+  </div>
+  <div class="s-done" id="sDone" hidden>
+    <div class="phase">Well done</div>
+    <div class="muted" id="sSummary"></div>
+    <button id="sDoneBtn" class="btn primary">Done</button>
+  </div>
+</div>
+
+<!-- Stillness screen -->
+<div id="void" class="void" hidden>
+  <button id="voidBtn">end</button>
+</div>
+
+<!-- Program editor -->
+<div id="editor" class="overlay sheet" hidden>
+  <div class="sheet-body">
+    <h2 id="eTitle">Program</h2>
+    <label>Name <input id="eName" type="text" maxlength="30" placeholder="e.g. 4-7-8"></label>
+    <div class="fields">
+      <label>Breathe in (s) <input id="eIn" type="number" inputmode="decimal" step="0.5" min="0"></label>
+      <label>Hold (s) <input id="eH1" type="number" inputmode="decimal" step="0.5" min="0"></label>
+      <label>Breathe out (s) <input id="eOut" type="number" inputmode="decimal" step="0.5" min="0"></label>
+      <label>Hold after out (s) <input id="eH2" type="number" inputmode="decimal" step="0.5" min="0"></label>
+    </div>
+    <label>Rounds <input id="eCycles" type="number" inputmode="numeric" step="1" min="1"></label>
+    <p class="muted">Set a hold to 0 to skip it.</p>
+    <div class="row">
+      <button id="eCancel" class="btn ghost">Cancel</button>
+      <button id="eSave" class="btn primary">Save</button>
+    </div>
+    <button id="eDel" class="btn text danger wide">Delete program</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
